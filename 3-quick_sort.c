@@ -8,63 +8,54 @@
  */
 void swap_items(int *array, size_t l, size_t r)
 {
-    if (array == NULL)
-        return;
+	int tmp;
 
-    int tmp = array[l];
-    array[l] = array[r];
-    array[r] = tmp;
+	if (array != NULL)
+	{
+		tmp = array[l];
+		array[l] = array[r];
+		array[r] = tmp;
+	}
 }
 
 /**
- * partition - Partitions the array using Lomuto's scheme.
- * @array: The array to partition.
- * @low: The starting index of the partition.
- * @high: The ending index of the partition.
- * @size: The length of the array.
- * @return: The partition index.
- */
-size_t partition(int *array, size_t low, size_t high, size_t size)
-{
-    int pivot = array[high];
-    size_t i = low;
-
-    for (size_t j = low; j < high; j++)
-    {
-        if (array[j] <= pivot)
-        {
-            if (i != j)
-            {
-                swap_items(array, i, j);
-                print_array(array, size);
-            }
-            i++;
-        }
-    }
-
-    swap_items(array, i, high);
-    print_array(array, size);
-
-    return i;
-}
-
-/**
- * quick_sort_recursive - Recursively sorts the array using quicksort.
- * @array: The array to sort.
- * @low: The starting index of the array.
- * @high: The ending index of the array.
+ * quick_sort_range_lomuto - Sorts a sub array using the
+ * quick sort algorithm and Lomuto's partition scheme.
+ * @array: The array containing the sub-array.
+ * @low: The starting position of the sub-array.
+ * @high: The ending position of the sub-array.
  * @size: The length of the array.
  */
-void quick_sort_recursive(int *array, size_t low, size_t high, size_t size)
+void quick_sort_range_lomuto(int *array, size_t low, size_t high, size_t size)
 {
-    if (low < high)
-    {
-        size_t pi = partition(array, low, high, size);
+	size_t k, i;
+	int pivot;
 
-        if (pi > 0)
-            quick_sort_recursive(array, low, pi - 1, size);
-        quick_sort_recursive(array, pi + 1, high, size);
-    }
+	if ((low >= high) || (array == NULL))
+		return;
+	pivot = array[high];
+	k = low;
+	for (i = low; i < high; i++)
+	{
+		if (array[i] <= pivot)
+		{
+			if (k != i)
+			{
+				swap_items(array, k, i);
+				print_array(array, size);
+			}
+			k++;
+		}
+	}
+	if (k != high)
+	{
+		swap_items(array, k, high);
+		print_array(array, size);
+	}
+	if (k - low > 1)
+		quick_sort_range_lomuto(array, low, k - 1, size);
+	if (high - k > 1)
+		quick_sort_range_lomuto(array, k + 1, high, size);
 }
 
 /**
@@ -75,9 +66,8 @@ void quick_sort_recursive(int *array, size_t low, size_t high, size_t size)
  */
 void quick_sort(int *array, size_t size)
 {
-    if (array != NULL && size > 1)
-    {
-        quick_sort_recursive(array, 0, size - 1, size);
-    }
+	if (array != NULL)
+	{
+		quick_sort_range_lomuto(array, 0, size - 1, size);
+	}
 }
-
