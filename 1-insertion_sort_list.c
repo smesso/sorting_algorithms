@@ -1,6 +1,6 @@
-#include <stdio.h>
 #include "sort.h"
-#include <stdlib.h>
+#include <stdio.h>
+
 /**
  * insertion_sort_list - sorts a DLL of integers in
  * ascending order using the insertion sort
@@ -9,44 +9,35 @@
  * @list: doubly linked list
  * Return: no return
  */
-
-/**
- * insertion_sort_list - Sorts a doubly linked list of integers in ascending order
- * using the Insertion sort algorithm
- * @list: Double pointer to the head of the list
- */
 void insertion_sort_list(listint_t **list)
 {
-    if (list == NULL || *list == NULL)
-        return;
+	listint_t *current, *temp;
 
-    listint_t *current = (*list)->next;
+	if (!list || !(*list) || !(*list)->next)
+		return;
 
-    while (current != NULL)
-    {
-        listint_t *temp = current->next;
-        listint_t *prev = current->prev;
+	current = (*list)->next;
 
-        while (prev != NULL && prev->n > current->n)
-        {
-            prev->next = current->next;
-            if (current->next != NULL)
-                current->next->prev = prev;
+	while (current)
+	{
+		temp = current;
+		while (temp->prev && temp->n < temp->prev->n)
+		{
+			temp->prev->next = temp->next;
+			if (temp->next)
+				temp->next->prev = temp->prev;
+			temp->next = temp->prev;
+			temp->prev = temp->prev->prev;
+			temp->next->prev = temp;
 
-            current->prev = prev->prev;
-            current->next = prev;
-            if (prev->prev != NULL)
-                prev->prev->next = current;
-            else
-                *list = current;
-            prev->prev = current;
+			if (temp->prev)
+				temp->prev->next = temp;
+			else
+				*list = temp;
 
-            prev = current->prev;
-            if (prev != NULL)
-                prev = prev->prev;
-        }
-
-        current = temp;
-    }
+			print_list(*list);
+		}
+		current = current->next;
+	}
 }
 
